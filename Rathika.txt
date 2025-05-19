@@ -1,0 +1,30 @@
+import pandas as pd
+from textblob import TextBlob
+
+# Load your dataset (replace 'social_media.csv' with your actual file)
+# Assume the file has a column called 'text' with social media posts
+df = pd.read_csv('social_media.csv')
+
+# Function to get sentiment polarity and emotion
+def analyze_sentiment(text):
+    analysis = TextBlob(str(text))
+    polarity = analysis.sentiment.polarity
+
+    # Define simple emotion categories
+    if polarity > 0.1:
+        emotion = 'Positive'
+    elif polarity < -0.1:
+        emotion = 'Negative'
+    else:
+        emotion = 'Neutral'
+
+    return pd.Series([polarity, emotion])
+
+# Apply sentiment analysis to each post
+df[['Polarity', 'Emotion']] = df['text'].apply(analyze_sentiment)
+
+# Show some results
+print(df[['text', 'Polarity', 'Emotion']].head())
+
+# Optionally, save results
+df.to_csv('analyzed_social_media.csv', index=False)
